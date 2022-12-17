@@ -9,6 +9,7 @@ import { FeedbackSuccessStep } from './Steps/FeedbackSuccessStep'
 import bugImageUrl from '../../assets/bug.svg'
 import ideaImageUrl from '../../assets/idea.svg'
 import thoughtImageUrl from '../../assets/thought.svg'
+import { trpc } from '../../utils/trpc'
 
 export const feedbackTypes = {
   BUG: {
@@ -37,6 +38,8 @@ export const feedbackTypes = {
 export type FeedbackType = keyof typeof feedbackTypes
 
 export function WidgetForm() {
+  const { mutateAsync: createFeedback } = trpc.createFeedback.useMutation()
+
   const [feedbackType, setFeedbackType] = useState<FeedbackType | null>(null)
   const [feedbackSent, setFeedbackSent] = useState(false)
 
@@ -49,7 +52,7 @@ export function WidgetForm() {
     try {
       const { type, comment } = data
 
-      console.log({ type, comment })
+      await createFeedback({ content: comment, type })
     } catch (err) {
       alert('Erro ao enviar o feedback, tente novamente!')
     }

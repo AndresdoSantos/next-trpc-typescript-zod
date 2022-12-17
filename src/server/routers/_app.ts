@@ -8,10 +8,28 @@ export const appRouter = router({
         text: z.string(),
       }),
     )
-    .query(({ input }) => {
+    .query(async ({ input, ctx }) => {
+      const count = await ctx.prisma.feedback.count()
+
       return {
-        greeting: `hello ${input.text}`,
+        greeting: `Feedbacks ${count}`,
       }
+    }),
+
+  createFeedback: procedure
+    .input(
+      z.object({
+        type: z.string(),
+        content: z.string(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      await ctx.prisma.feedback.create({
+        data: {
+          type: input.type,
+          content: input.content,
+        },
+      })
     }),
 })
 
