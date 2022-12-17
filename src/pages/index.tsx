@@ -1,10 +1,18 @@
 import { Chat } from 'phosphor-react'
-import * as Popover from '@radix-ui/react-popover';
+import * as Popover from '@radix-ui/react-popover'
+
 import { WidgetForm } from '../components/WidgetForm'
 
+import { trpc } from '../utils/trpc'
+
 export default function Home() {
+  const { data } = trpc.hello.useQuery({ text: '2' })
+  console.log(data)
+
   return (
     <div className="h-screen w-screen bg-black flex flex-col gap-4 items-end justify-end p-8">
+      <h1 className="text-white">{data?.greeting}</h1>
+
       <Popover.Root>
         <Popover.Portal>
           <Popover.Content align="end" sideOffset={16}>
